@@ -1,0 +1,107 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      dynamicMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+//dynamicFvMesh       dynamicOversetFvMesh;
+
+//solver          multiSolidBodyMotionSolver;
+
+//multiSolidBodyMotionSolverCoeffs
+//{
+    //channel
+    //{
+        //solidBodyMotionFunction linearMotion;
+        //linearMotionCoeffs
+        //{
+            //velocity        (0 0 -0.03);
+        //}
+    //}
+//}
+
+// ************************************************************************* //
+
+//dynamicFvMesh       staticFvMesh;
+
+dynamicFvMesh       dynamicMotionSolverFvMesh;
+
+motionSolverLibs    (sixDoFRigidBodyMotionSedFoam);
+
+motionSolver        sixDoFRigidBodyMotion;
+
+
+
+//solver          displacementLaplacian;
+
+sixDoFRigidBodyMotionCoeffs
+{
+
+    patches         (cylinder);
+    innerDistance   0;
+    outerDistance   0.28;
+        
+    accelerationRelaxation 0.8;
+    accelerationDamping 0.8;
+    
+    //mass reduced by Buoyancy: M'=(rhoCylinder-rhoFluid )*VolumeSphere=(rhoCylinder-rhoFluid)*pi*R*R*L
+    mass	3.934656303; //rhoCylinder=2420kg/m3, rhoFluid=1000kg/m3, R=0.0525m and L=0.32m
+    velocity        ( 0 -0. -0. );
+    centreOfMass    ( 0 0.0 0.0525 );     
+    momentOfInertia ( 0.03628695789438594 0.005422448217571874 0.03628695789438594 ); // I=0.5*mass*R*R
+    rho             rhoInf;
+    rhoInf          1100;
+    g               (0 0 -9.81);
+    report          on;
+    reportToFile    on;
+    
+    solver
+    {
+        type Newmark;
+    }
+    
+ constraints
+    {
+
+//        fixedPoint
+  //    {
+    //    sixDoFRigidBodyMotionConstraint point;
+      //  centreOfRotation (0. 0.000 0.005);
+      //}
+        
+
+    //    fixedLine
+      //  {
+        //    sixDoFRigidBodyMotionConstraint line;
+    //      //centreOfRotation (0.5 0.45 0.1);
+       //     direction (0 1 0);
+       //}
+
+/*        
+        fixedAxis
+        {
+            sixDoFRigidBodyMotionConstraint axis;
+            axis (0 1 0);
+        }
+*/
+
+
+
+        
+    }
+
+}
+
+
+
+
